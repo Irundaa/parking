@@ -19,13 +19,25 @@ repositories {
 }
 
 dependencies {
+    val mapstructVersion = "1.5.5.Final"
+    val lombokBindingVersion = "0.2.0"
+
+    implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter")
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-    runtimeOnly("com.mysql:mysql-connector-j")
+    implementation("org.mapstruct:mapstruct:$mapstructVersion")
+
     compileOnly("org.projectlombok:lombok")
+
+    runtimeOnly("com.mysql:mysql-connector-j")
+
     annotationProcessor("org.projectlombok:lombok")
+    annotationProcessor("org.mapstruct:mapstruct-processor:$mapstructVersion")
+    annotationProcessor("org.projectlombok:lombok-mapstruct-binding:$lombokBindingVersion")
+
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("com.h2database:h2")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
 tasks.withType<Test> {
