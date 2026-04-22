@@ -4,6 +4,7 @@ import com.task.parking.dto.ParkingLotRequest;
 import com.task.parking.dto.ParkingLotResponse;
 import com.task.parking.entity.ParkingLot;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 /**
  * Mapper for converting between ParkingLot entity and its corresponding DTOs.
@@ -17,6 +18,8 @@ public interface ParkingLotMapper {
    * @param request the request DTO containing parking lot details
    * @return the mapped ParkingLot entity
    */
+  @Mapping(target = "id", ignore = true)
+  @Mapping(target = "parkingLevels", ignore = true)
   ParkingLot toEntity(ParkingLotRequest request);
 
   /**

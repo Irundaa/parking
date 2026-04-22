@@ -19,6 +19,8 @@ public interface ParkingLevelMapper {
    * @return the mapped ParkingLevel entity
    */
   @Mapping(source = "parkingLotId", target = "parkingLot.id")
+  @Mapping(target = "id", ignore = true)
+  @Mapping(target = "parkingSlots", ignore = true)
   ParkingLevel toEntity(ParkingLevelRequest request);
 
   /**

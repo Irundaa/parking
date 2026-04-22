@@ -19,6 +19,8 @@ public interface ParkingSlotMapper {
    * @return the mapped ParkingSlot entity
    */
   @Mapping(source = "parkingLevelId", target = "parkingLevel.id")
+  @Mapping(target = "id", ignore = true)
+  @Mapping(target = "available", ignore = true)
   ParkingSlot toEntity(ParkingSlotRequest request);
 
   /**
