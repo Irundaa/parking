@@ -14,7 +14,6 @@ import com.task.parking.enums.SlotStatus;
 import com.task.parking.enums.TicketStatus;
 import com.task.parking.factory.VehicleFactory;
 import com.task.parking.mapper.TicketMapper;
-import com.task.parking.repository.ParkingSlotRepository;
 import com.task.parking.repository.TicketRepository;
 import com.task.parking.repository.VehicleRepository;
 import com.task.parking.service.ParkingService;
@@ -67,6 +66,7 @@ public class ParkingServiceImpl implements ParkingService {
     response.setLicensePlate(request.getLicensePlate());
     response.setParkingSlotId(parkingSlot.getId());
     response.setEntryTime(ticket.getEntryTime());
+    response.setTicketId(ticket.getId());
 
     log.info("Vehicle {} checked in successfully on slot {}. Ticket ID: {}",
         vehicle.getLicensePlate(), parkingSlot.getId(), ticket.getId());
@@ -79,7 +79,7 @@ public class ParkingServiceImpl implements ParkingService {
   public CheckOutResponse checkOut(String licensePlate) {
     Ticket ticket = ticketRepository.findByVehicleLicensePlateAndTicketStatus(licensePlate,
         TicketStatus.ACTIVE).orElseThrow(() -> new EntityNotFoundException(
-            "Parking session with license plate: " + licensePlate + " doesn`t exist" ));
+            "Parking session with license plate: " + licensePlate + " does not exist" ));
 
     ParkingSlot parkingSlot = ticket.getParkingSlot();
     parkingSlot.setStatus(SlotStatus.AVAILABLE);

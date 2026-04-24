@@ -27,6 +27,7 @@ public class ParkingSlotServiceImpl implements ParkingSlotService {
   @Transactional
   public ParkingSlotResponse create(ParkingSlotRequest request) {
     ParkingSlot parkingSlot = parkingSlotMapper.toEntity(request);
+    parkingSlot.setStatus(SlotStatus.AVAILABLE);
     ParkingSlot savedParkingSlot = parkingSlotRepository.save(parkingSlot);
     log.info("Successfully created parking slot with ID: {}", savedParkingSlot.getId());
     return parkingSlotMapper.toResponse(savedParkingSlot);

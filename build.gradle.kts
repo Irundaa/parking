@@ -21,12 +21,14 @@ repositories {
 dependencies {
     val mapstructVersion = "1.5.5.Final"
     val lombokBindingVersion = "0.2.0"
+    val springDocVersion = "2.8.6"
 
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.mapstruct:mapstruct:$mapstructVersion")
     implementation("org.springframework.boot:spring-boot-starter-validation")
+    implementation ("org.springdoc:springdoc-openapi-starter-webmvc-ui:$springDocVersion")
 
     compileOnly("org.projectlombok:lombok")
 
