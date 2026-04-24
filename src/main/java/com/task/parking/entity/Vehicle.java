@@ -2,6 +2,7 @@ package com.task.parking.entity;
 
 import java.util.List;
 import com.task.parking.enums.ParkingSlotType;
+import com.task.parking.enums.VehicleType;
 import jakarta.persistence.DiscriminatorColumn;
 import jakarta.persistence.DiscriminatorType;
 import jakarta.persistence.Entity;
@@ -31,4 +32,7 @@ public abstract class Vehicle {
 
   @Transient
   public abstract List<ParkingSlotType> getAllowedSlotTypes();
+
+  @Transient
+  public abstract VehicleType getVehicleType();
 }

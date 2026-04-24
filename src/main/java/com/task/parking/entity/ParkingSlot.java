@@ -1,8 +1,11 @@
 package com.task.parking.entity;
 
 import com.task.parking.enums.ParkingSlotType;
+import com.task.parking.enums.SlotStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -28,10 +31,12 @@ public class ParkingSlot {
   private Long id;
 
   @Column(nullable = false)
+  @Enumerated(EnumType.STRING)
   private ParkingSlotType type;
 
-  @Column(name = "is_available", nullable = false)
-  private boolean isAvailable;
+  @Column(nullable = false)
+  @Enumerated(EnumType.STRING)
+  private SlotStatus status;
 
   @ManyToOne
   @JoinColumn(name = "parking_level_id", referencedColumnName = "id", nullable = false)

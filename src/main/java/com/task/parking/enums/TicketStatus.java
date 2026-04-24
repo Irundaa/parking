@@ -1,6 +1,6 @@
 package com.task.parking.enums;
 
-public enum Status {
+public enum TicketStatus {
   ACTIVE,
   COMPLETED
 }

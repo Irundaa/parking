@@ -14,5 +14,6 @@ public class CheckOutResponse {
   private String licensePlate;
   private LocalDateTime entryTime;
   private LocalDateTime exitTime;
+  private String duration;
   private BigDecimal fee;
 }

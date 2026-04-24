@@ -25,16 +25,6 @@ public interface TicketMapper {
   CheckInResponse toCheckInResponse(Ticket ticket);
 
   /**
-   * Converts a Ticket entity to a CheckOutResponse DTO.
-   *
-   * @param ticket the Ticket entity
-   * @return the mapped CheckOutResponse DTO
-   */
-  @Mapping(source = "id", target = "ticketId")
-  @Mapping(source = "vehicle.licensePlate", target = "licensePlate")
-  CheckOutResponse toCheckOutResponse(Ticket ticket);
-
-  /**
    * Converts a Ticket entity to a comprehensive TicketResponse DTO.
    *
    * @param ticket the Ticket entity
