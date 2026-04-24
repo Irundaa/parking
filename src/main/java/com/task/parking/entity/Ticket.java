@@ -2,7 +2,7 @@ package com.task.parking.entity;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import com.task.parking.enums.Status;
+import com.task.parking.enums.TicketStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -50,5 +50,5 @@ public class Ticket {
 
   @Column(nullable = false)
   @Enumerated(EnumType.STRING)
-  private Status status;
+  private TicketStatus ticketStatus;
 }
