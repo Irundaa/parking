@@ -8,12 +8,15 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.Optional;
 import com.task.parking.dto.ParkingLevelRequest;
 import com.task.parking.dto.ParkingLevelResponse;
 import com.task.parking.entity.ParkingLevel;
+import com.task.parking.entity.ParkingLot;
 import com.task.parking.exception.ResourceNotFoundException;
 import com.task.parking.mapper.ParkingLevelMapper;
 import com.task.parking.repository.ParkingLevelRepository;
+import com.task.parking.repository.ParkingLotRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InOrder;
@@ -32,6 +35,9 @@ class ParkingLevelServiceImplTest {
   private ParkingLevelRepository parkingLevelRepository;
 
   @Mock
+  private ParkingLotRepository parkingLotRepository;
+
+  @Mock
   private ParkingLevelMapper parkingLevelMapper;
 
   @InjectMocks
@@ -40,10 +46,14 @@ class ParkingLevelServiceImplTest {
   @Test
   void createShouldSaveLevelAndReturnResponse() {
     ParkingLevelRequest request = buildRequest(PARKING_LOT_ID);
+    ParkingLot parkingLot = new ParkingLot();
+    parkingLot.setId(PARKING_LOT_ID);
+
     ParkingLevel entity = buildEntity(null);
     ParkingLevel savedEntity = buildEntity(LEVEL_ID);
     ParkingLevelResponse expectedResponse = buildResponse(LEVEL_ID);
 
+    when(parkingLotRepository.findById(PARKING_LOT_ID)).thenReturn(Optional.of(parkingLot));
     when(parkingLevelMapper.toEntity(request)).thenReturn(entity);
     when(parkingLevelRepository.save(entity)).thenReturn(savedEntity);
     when(parkingLevelMapper.toResponse(savedEntity)).thenReturn(expectedResponse);
@@ -51,7 +61,21 @@ class ParkingLevelServiceImplTest {
     ParkingLevelResponse actual = parkingLevelService.create(request);
 
     assertThat(actual).isEqualTo(expectedResponse);
+    verify(parkingLotRepository).findById(PARKING_LOT_ID);
     verify(parkingLevelRepository).save(entity);
+  }
+
+  @Test
+  void createShouldThrowExceptionWhenParkingLotNotFound() {
+    ParkingLevelRequest request = buildRequest(PARKING_LOT_ID);
+
+    when(parkingLotRepository.findById(PARKING_LOT_ID)).thenReturn(Optional.empty());
+
+    assertThatThrownBy(() -> parkingLevelService.create(request))
+        .isInstanceOf(ResourceNotFoundException.class)
+        .hasMessageContaining("Parking lot not found");
+
+    verify(parkingLevelRepository, never()).save(any());
   }
 
   @Test
