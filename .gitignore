@@ -12,10 +12,13 @@ build/
 out/
 
 # === Java & Spring Boot ===
+target/
 *.class
 *.log
 *.jar
 *.war
+*.nar
+*.ear
 
 # === IDEs ===
 .apt_generated

@@ -1,6 +1,7 @@
 package com.task.parking.service;
 
 import java.util.List;
+import java.util.Optional;
 import com.task.parking.dto.ParkingSlotRequest;
 import com.task.parking.dto.ParkingSlotResponse;
 import com.task.parking.entity.ParkingSlot;
@@ -41,10 +42,9 @@ public interface ParkingSlotService {
    * This method is primarily used internally during the check-in process.
    *
    * @param allowedTypes a list of slot types suitable for a specific vehicle
-   * @return the first available parking slot entity
-   * @throws ResourceNotFoundException if no matching available slot is found
+   * @return an Optional containing the first available parking slot, or empty if none are available
    */
-  ParkingSlot getAvailableSlot(List<ParkingSlotType> allowedTypes);
+  Optional<ParkingSlot> getAvailableSlot(List<ParkingSlotType> allowedTypes);
 
   /**
    * Manually changes the operational status of a specific parking slot.

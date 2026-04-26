@@ -33,7 +33,6 @@ class ParkingSlotServiceImplTest {
   private static final Long LEVEL_ID = 5L;
   private static final String NOT_FOUND_BY_ID_MSG = "Parking slot not found with ID: ";
   private static final String NOT_FOUND_BY_TYPE_MSG = "Parking slot not found for this type";
-  private static final String NULL_ENTITY_MESSAGE = "Entity must not be null";
 
   @Mock
   private ParkingSlotRepository parkingSlotRepository;
@@ -121,22 +120,22 @@ class ParkingSlotServiceImplTest {
     when(parkingSlotRepository.findFirstByStatusAndTypeIn(SlotStatus.AVAILABLE, allowedTypes))
         .thenReturn(Optional.of(expectedSlot));
 
-    ParkingSlot actual = parkingSlotService.getAvailableSlot(allowedTypes);
+    Optional<ParkingSlot> actual = parkingSlotService.getAvailableSlot(allowedTypes);
 
-    assertThat(actual).isEqualTo(expectedSlot);
+    assertThat(actual).isEqualTo(Optional.of(expectedSlot));
     verify(parkingSlotRepository).findFirstByStatusAndTypeIn(SlotStatus.AVAILABLE, allowedTypes);
   }
 
   @Test
-  void getAvailableSlotShouldThrowExceptionWhenNotFound() {
+  void getAvailableSlotShouldReturnEmptyOptionalWhenNotFound() {
     List<ParkingSlotType> allowedTypes = List.of(ParkingSlotType.MOTORCYCLE);
 
     when(parkingSlotRepository.findFirstByStatusAndTypeIn(SlotStatus.AVAILABLE, allowedTypes))
         .thenReturn(Optional.empty());
 
-    assertThatThrownBy(() -> parkingSlotService.getAvailableSlot(allowedTypes))
-        .isInstanceOf(ResourceNotFoundException.class)
-        .hasMessageContaining(NOT_FOUND_BY_TYPE_MSG);
+    Optional<ParkingSlot> actual = parkingSlotService.getAvailableSlot(allowedTypes);
+
+    assertThat(actual).isEmpty();
   }
 
   @ParameterizedTest
