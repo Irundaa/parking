@@ -11,6 +11,13 @@ import org.springframework.stereotype.Component;
 public class VehicleFactory {
 
   public Vehicle createVehicle(String licensePlate, VehicleType type) {
+    if (type == null) {
+      throw new IllegalArgumentException("Vehicle type must not be null");
+    }
+    if (licensePlate == null) {
+      throw new IllegalArgumentException("License plate must not be null");
+    }
+
     Vehicle vehicle = switch (type) {
       case CAR -> new Car();
       case TRUCK -> new Truck();

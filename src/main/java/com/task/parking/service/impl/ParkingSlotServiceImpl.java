@@ -67,7 +67,7 @@ public class ParkingSlotServiceImpl implements ParkingSlotService {
     log.info("Updating status of parking slot ID: {} to {}", id, status);
 
     ParkingSlot slot = parkingSlotRepository.findById(id)
-        .orElseThrow(() -> new EntityNotFoundException("Parking slot not found with id: " + id));
+        .orElseThrow(() -> new EntityNotFoundException("Parking slot not found with ID: " + id));
 
     slot.setStatus(status);
   }
