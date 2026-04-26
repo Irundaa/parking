@@ -3,10 +3,13 @@ package com.task.parking.service.impl;
 import com.task.parking.dto.ParkingLevelRequest;
 import com.task.parking.dto.ParkingLevelResponse;
 import com.task.parking.entity.ParkingLevel;
+import com.task.parking.entity.ParkingLot;
 import com.task.parking.exception.ResourceNotFoundException;
 import com.task.parking.mapper.ParkingLevelMapper;
 import com.task.parking.repository.ParkingLevelRepository;
+import com.task.parking.repository.ParkingLotRepository;
 import com.task.parking.service.ParkingLevelService;
+import com.task.parking.service.ParkingLotService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -19,11 +22,16 @@ public class ParkingLevelServiceImpl implements ParkingLevelService {
 
   private final ParkingLevelRepository parkingLevelRepository;
   private final ParkingLevelMapper parkingLevelMapper;
+  private final ParkingLotRepository parkingLotRepository;
 
   @Override
   @Transactional
   public ParkingLevelResponse create(ParkingLevelRequest request) {
+    ParkingLot parkingLot = parkingLotRepository.findById(request.getParkingLotId())
+        .orElseThrow(() -> new ResourceNotFoundException("Parking lot not found: " + request.getParkingLotId()));
+
     ParkingLevel parkingLevel = parkingLevelMapper.toEntity(request);
+    parkingLevel.setParkingLot(parkingLot);
     log.info("Creating parking level for parking lot ID: {}", request.getParkingLotId());
     ParkingLevel savedParkingLevel = parkingLevelRepository.save(parkingLevel);
     log.info("Successfully created parking level with ID: {}", savedParkingLevel.getId());

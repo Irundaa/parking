@@ -1,6 +1,7 @@
 package com.task.parking.service.impl;
 
 import java.util.List;
+import java.util.Optional;
 import com.task.parking.dto.ParkingSlotRequest;
 import com.task.parking.dto.ParkingSlotResponse;
 import com.task.parking.entity.ParkingSlot;
@@ -55,10 +56,9 @@ public class ParkingSlotServiceImpl implements ParkingSlotService {
 
   @Override
   @Transactional(readOnly = true)
-  public ParkingSlot getAvailableSlot(List<ParkingSlotType> allowedTypes){
+  public Optional<ParkingSlot> getAvailableSlot(List<ParkingSlotType> allowedTypes) {
     log.info("Fetching available parking slot");
-    return parkingSlotRepository.findFirstByStatusAndTypeIn(SlotStatus.AVAILABLE, allowedTypes)
-        .orElseThrow(() -> new ResourceNotFoundException("Parking slot not found for this type"));
+    return parkingSlotRepository.findFirstByStatusAndTypeIn(SlotStatus.AVAILABLE, allowedTypes);
   }
 
   @Override

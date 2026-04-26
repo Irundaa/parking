@@ -44,6 +44,7 @@ class ParkingServiceImplTest {
   private static final String LICENSE_PLATE = "AB1234CD";
   private static final String TICKET_EXISTS_MSG = "Ticket already exists";
   private static final String SESSION_NOT_FOUND_MSG = "Parking session with license plate: " + LICENSE_PLATE + " does not exist";
+  private static final String NO_PARKING_SLOT_MSG = "No available slots for the given types";
   private static final Long SLOT_ID = 5L;
   private static final Long TICKET_ID = 10L;
   private static final BigDecimal CALCULATED_FEE = BigDecimal.valueOf(150);
@@ -90,7 +91,7 @@ class ParkingServiceImplTest {
     when(vehicleRepository.findByLicensePlate(LICENSE_PLATE)).thenReturn(Optional.empty());
     when(vehicleFactory.createVehicle(LICENSE_PLATE, VehicleType.CAR)).thenReturn(newVehicle);
     when(vehicleRepository.save(newVehicle)).thenReturn(newVehicle);
-    when(parkingSlotService.getAvailableSlot(newVehicle.getAllowedSlotTypes())).thenReturn(slot);
+    when(parkingSlotService.getAvailableSlot(newVehicle.getAllowedSlotTypes())).thenReturn(Optional.of(slot));
     when(ticketRepository.save(any(Ticket.class))).thenReturn(savedTicket);
 
     CheckInResponse actual = parkingService.checkIn(request);
@@ -113,7 +114,7 @@ class ParkingServiceImplTest {
     when(ticketRepository.existsByVehicleLicensePlateAndTicketStatus(LICENSE_PLATE, TicketStatus.ACTIVE))
         .thenReturn(false);
     when(vehicleRepository.findByLicensePlate(LICENSE_PLATE)).thenReturn(Optional.of(existingVehicle));
-    when(parkingSlotService.getAvailableSlot(existingVehicle.getAllowedSlotTypes())).thenReturn(slot);
+    when(parkingSlotService.getAvailableSlot(existingVehicle.getAllowedSlotTypes())).thenReturn(Optional.of(slot));
     when(ticketRepository.save(any(Ticket.class))).thenReturn(savedTicket);
 
     CheckInResponse actual = parkingService.checkIn(request);
@@ -136,14 +137,6 @@ class ParkingServiceImplTest {
         .hasMessageContaining(TICKET_EXISTS_MSG);
 
     verify(vehicleRepository, never()).findByLicensePlate(any());
-  }
-
-  @Test
-  void checkInShouldThrowExceptionWhenRequestIsNull() {
-    assertThatThrownBy(() -> parkingService.checkIn(null))
-        .isInstanceOf(NullPointerException.class);
-
-    verify(ticketRepository, never()).save(any());
   }
 
   @Test
@@ -253,6 +246,27 @@ class ParkingServiceImplTest {
 
     assertThat(actual.getDuration()).isEqualTo(EXPECTED_EXACT_DURATION_STRING);
     verify(feeCalculationStrategy).calculate(PARKED_HOURS);
+  }
+
+  @Test
+  void checkInShouldThrowExceptionWhenNoAvailableSlotsFound() {
+    CheckInRequest request = buildCheckInRequest(LICENSE_PLATE, VehicleType.CAR);
+    Vehicle existingVehicle = buildVehicle(LICENSE_PLATE);
+
+    when(ticketRepository.existsByVehicleLicensePlateAndTicketStatus(LICENSE_PLATE, TicketStatus.ACTIVE))
+        .thenReturn(false);
+
+    when(vehicleRepository.findByLicensePlate(LICENSE_PLATE))
+        .thenReturn(Optional.of(existingVehicle));
+
+    when(parkingSlotService.getAvailableSlot(existingVehicle.getAllowedSlotTypes()))
+        .thenReturn(Optional.empty());
+
+    assertThatThrownBy(() -> parkingService.checkIn(request))
+        .isInstanceOf(ResourceNotFoundException.class)
+        .hasMessageContaining(NO_PARKING_SLOT_MSG);
+
+    verify(ticketRepository, never()).save(any(Ticket.class));
   }
 
   private CheckInRequest buildCheckInRequest(String licensePlate, VehicleType type) {

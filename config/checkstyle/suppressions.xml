@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!DOCTYPE suppressions PUBLIC
+        "-//Checkstyle//DTD SuppressionFilter  Configuration 1.2//EN"
+        "https://checkstyle.org/dtds/suppressions_1_2.dtd">
+
+<suppressions>
+    <suppress checks="JavadocMethod" files=".*[\\/]dto[\\/].*|.*[\\/]entity[\\/].*"/>
+    <suppress checks="JavadocType" files=".*[\\/]dto[\\/].*|.*[\\/]entity[\\/].*"/>
+    <suppress checks="JavadocMethod" files=".*[\\/]controller[\\/].*|.*[\\/]entity[\\/].*"/>
+    <suppress checks="JavadocType" files=".*[\\/]controller[\\/].*|.*[\\/]entity[\\/].*"/>
+    <suppress checks="JavadocMethod" files=".*[\\/]exception[\\/].*|.*[\\/]entity[\\/].*"/>
+    <suppress checks="JavadocType" files=".*[\\/]exception[\\/].*|.*[\\/]entity[\\/].*"/>
+    <suppress checks="JavadocMethod" files=".*[\\/]strategy[\\/].*|.*[\\/]entity[\\/].*"/>
+    <suppress checks="JavadocType" files=".*[\\/]strategy[\\/].*|.*[\\/]entity[\\/].*"/>
+    <suppress checks="JavadocMethod" files=".*[\\/]factory[\\/].*|.*[\\/]entity[\\/].*"/>
+    <suppress checks="JavadocType" files=".*[\\/]factory[\\/].*|.*[\\/]entity[\\/].*"/>
+    <suppress checks="JavadocVariable" files=".*"/> <suppress checks=".*" files=".*MapperImpl.java"/>
+</suppressions>

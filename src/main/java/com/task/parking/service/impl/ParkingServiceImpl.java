@@ -42,7 +42,7 @@ public class ParkingServiceImpl implements ParkingService {
   @Override
   @Transactional
   public CheckInResponse checkIn(CheckInRequest request) {
-    if (ticketRepository.existsByVehicleLicensePlateAndTicketStatus(request.getLicensePlate(),TicketStatus.ACTIVE)){
+    if (ticketRepository.existsByVehicleLicensePlateAndTicketStatus(request.getLicensePlate(),TicketStatus.ACTIVE)) {
       throw new ParkingConflictException("Ticket already exists");
     }
 
@@ -52,7 +52,8 @@ public class ParkingServiceImpl implements ParkingService {
           return vehicleRepository.save(newVehicle);
         });
 
-    ParkingSlot parkingSlot = parkingSlotService.getAvailableSlot(vehicle.getAllowedSlotTypes());
+    ParkingSlot parkingSlot = parkingSlotService.getAvailableSlot(vehicle.getAllowedSlotTypes())
+        .orElseThrow(() -> new ResourceNotFoundException("No available slots for the given types"));
     parkingSlot.setStatus(SlotStatus.OCCUPIED);
 
     Ticket ticket = new Ticket();
@@ -89,9 +90,9 @@ public class ParkingServiceImpl implements ParkingService {
 
     Duration duration = Duration.between(ticket.getEntryTime(), ticket.getExitTime());
     long hours = duration.toHours();
-    if (duration.toMinutesPart() > 0) hours++;
-    String durationString = String.format("%d hours %d minutes", duration.toHours(),
-        duration.toMinutesPart());
+    if (duration.toMinutesPart() > 0) {
+      hours++;
+    }
 
     FeeCalculationStrategy strategy = feeStrategyFactory.getStrategy(ticket
         .getVehicle().getVehicleType());
@@ -100,6 +101,9 @@ public class ParkingServiceImpl implements ParkingService {
     ticket.setTicketStatus(TicketStatus.COMPLETED);
     ticket.setFee(fee);
     ticket = ticketRepository.save(ticket);
+
+    String durationString = String.format("%d hours %d minutes", duration.toHours(),
+        duration.toMinutesPart());
 
     CheckOutResponse response = new CheckOutResponse();
     response.setLicensePlate(licensePlate);
