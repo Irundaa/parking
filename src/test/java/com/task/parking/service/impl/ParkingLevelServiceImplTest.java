@@ -11,9 +11,9 @@ import static org.mockito.Mockito.when;
 import com.task.parking.dto.ParkingLevelRequest;
 import com.task.parking.dto.ParkingLevelResponse;
 import com.task.parking.entity.ParkingLevel;
+import com.task.parking.exception.ResourceNotFoundException;
 import com.task.parking.mapper.ParkingLevelMapper;
 import com.task.parking.repository.ParkingLevelRepository;
-import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InOrder;
@@ -27,7 +27,6 @@ class ParkingLevelServiceImplTest {
   private static final Long LEVEL_ID = 1L;
   private static final Long PARKING_LOT_ID = 99L;
   private static final String NOT_FOUND_MESSAGE = "Parking level not found with id: ";
-  private static final String NULL_ENTITY_MESSAGE = "Entity must not be null";
 
   @Mock
   private ParkingLevelRepository parkingLevelRepository;
@@ -71,7 +70,7 @@ class ParkingLevelServiceImplTest {
     when(parkingLevelRepository.existsById(LEVEL_ID)).thenReturn(false);
 
     assertThatThrownBy(() -> parkingLevelService.delete(LEVEL_ID))
-        .isInstanceOf(EntityNotFoundException.class)
+        .isInstanceOf(ResourceNotFoundException.class)
         .hasMessageContaining(NOT_FOUND_MESSAGE + LEVEL_ID);
 
     verify(parkingLevelRepository, never()).deleteById(any());

@@ -5,6 +5,7 @@ import com.task.parking.entity.Motorcycle;
 import com.task.parking.entity.Truck;
 import com.task.parking.entity.Vehicle;
 import com.task.parking.enums.VehicleType;
+import com.task.parking.exception.InvalidParkingRequestException;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -12,10 +13,10 @@ public class VehicleFactory {
 
   public Vehicle createVehicle(String licensePlate, VehicleType type) {
     if (type == null) {
-      throw new IllegalArgumentException("Vehicle type must not be null");
+      throw new InvalidParkingRequestException("Vehicle type must not be null");
     }
     if (licensePlate == null) {
-      throw new IllegalArgumentException("License plate must not be null");
+      throw new InvalidParkingRequestException("License plate must not be null");
     }
 
     Vehicle vehicle = switch (type) {

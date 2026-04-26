@@ -9,8 +9,9 @@ import static org.mockito.Mockito.when;
 
 import com.task.parking.dto.ParkingLotRequest;
 import com.task.parking.dto.ParkingLotResponse;
+import com.task.parking.exception.InvalidParkingRequestException;
+import com.task.parking.exception.ResourceNotFoundException;
 import com.task.parking.service.ParkingLotService;
-import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -50,10 +51,10 @@ class ParkingLotControllerTest {
   void createLotShouldThrowExceptionWhenServiceFails() {
     ParkingLotRequest request = buildRequest(LOT_NAME);
     when(parkingLotService.create(request))
-        .thenThrow(new IllegalArgumentException("Invalid parking lot data"));
+        .thenThrow(new InvalidParkingRequestException("Invalid parking lot data"));
 
     assertThatThrownBy(() -> parkingLotController.createLot(request))
-        .isInstanceOf(IllegalArgumentException.class)
+        .isInstanceOf(InvalidParkingRequestException.class)
         .hasMessageContaining("Invalid parking lot data");
   }
 
@@ -69,11 +70,11 @@ class ParkingLotControllerTest {
 
   @Test
   void deleteLotShouldThrowExceptionWhenLotNotFound() {
-    doThrow(new EntityNotFoundException("Lot not found"))
+    doThrow(new ResourceNotFoundException("Lot not found"))
         .when(parkingLotService).delete(LOT_ID);
 
     assertThatThrownBy(() -> parkingLotController.deleteLot(LOT_ID))
-        .isInstanceOf(EntityNotFoundException.class)
+        .isInstanceOf(ResourceNotFoundException.class)
         .hasMessageContaining("not found");
   }
 

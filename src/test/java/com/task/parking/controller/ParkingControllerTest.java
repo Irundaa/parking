@@ -8,8 +8,9 @@ import static org.mockito.Mockito.when;
 import com.task.parking.dto.CheckInRequest;
 import com.task.parking.dto.CheckInResponse;
 import com.task.parking.dto.CheckOutResponse;
+import com.task.parking.exception.InvalidParkingRequestException;
+import com.task.parking.exception.ResourceNotFoundException;
 import com.task.parking.service.ParkingService;
-import jakarta.persistence.EntityNotFoundException;
 import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.Test;
@@ -49,10 +50,10 @@ class ParkingControllerTest {
   void checkInShouldThrowExceptionWhenCarAlreadyParked() {
     CheckInRequest request = buildCheckInRequest(LICENSE_PLATE);
     when(parkingService.checkIn(request))
-        .thenThrow(new IllegalArgumentException("Ticket already exists"));
+        .thenThrow(new InvalidParkingRequestException("Ticket already exists"));
 
     assertThatThrownBy(() -> parkingController.checkIn(request))
-        .isInstanceOf(IllegalArgumentException.class)
+        .isInstanceOf(InvalidParkingRequestException.class)
         .hasMessageContaining("already exists");
   }
 
@@ -72,10 +73,10 @@ class ParkingControllerTest {
   @Test
   void checkOutShouldThrowExceptionWhenCarNotFound() {
     when(parkingService.checkOut(LICENSE_PLATE))
-        .thenThrow(new EntityNotFoundException("Parking session with license plate does not exist"));
+        .thenThrow(new ResourceNotFoundException("Parking session with license plate does not exist"));
 
     assertThatThrownBy(() -> parkingController.checkOut(LICENSE_PLATE))
-        .isInstanceOf(EntityNotFoundException.class)
+        .isInstanceOf(ResourceNotFoundException.class)
         .hasMessageContaining("does not exist");
   }
 

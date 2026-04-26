@@ -3,10 +3,10 @@ package com.task.parking.service.impl;
 import com.task.parking.dto.ParkingLotRequest;
 import com.task.parking.dto.ParkingLotResponse;
 import com.task.parking.entity.ParkingLot;
+import com.task.parking.exception.ResourceNotFoundException;
 import com.task.parking.mapper.ParkingLotMapper;
 import com.task.parking.repository.ParkingLotRepository;
 import com.task.parking.service.ParkingLotService;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -34,7 +34,7 @@ public class ParkingLotServiceImpl implements ParkingLotService {
   public void delete(Long id) {
     log.info("Deleting parking lot: {}", id);
     if (!parkingLotRepository.existsById(id)) {
-      throw new EntityNotFoundException("Parking lot not found with id: " + id);
+      throw new ResourceNotFoundException("Parking lot not found with id: " + id);
     }
     parkingLotRepository.deleteById(id);
   }

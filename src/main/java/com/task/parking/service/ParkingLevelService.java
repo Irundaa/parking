@@ -2,6 +2,7 @@ package com.task.parking.service;
 
 import com.task.parking.dto.ParkingLevelRequest;
 import com.task.parking.dto.ParkingLevelResponse;
+import com.task.parking.exception.ResourceNotFoundException;
 
 /**
  * Service interface for managing parking levels.
@@ -21,6 +22,7 @@ public interface ParkingLevelService {
    * Deletes a parking level by its unique identifier.
    *
    * @param id the unique identifier of the parking level to delete
+   * @throws ResourceNotFoundException if the level ID does not exist
    */
   void delete(Long id);
 }

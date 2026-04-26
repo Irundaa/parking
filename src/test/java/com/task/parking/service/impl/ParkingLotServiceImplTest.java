@@ -10,9 +10,9 @@ import static org.mockito.Mockito.when;
 import com.task.parking.dto.ParkingLotRequest;
 import com.task.parking.dto.ParkingLotResponse;
 import com.task.parking.entity.ParkingLot;
+import com.task.parking.exception.ResourceNotFoundException;
 import com.task.parking.mapper.ParkingLotMapper;
 import com.task.parking.repository.ParkingLotRepository;
-import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -25,7 +25,6 @@ class ParkingLotServiceImplTest {
   private static final Long LOT_ID = 1L;
   private static final String LOT_NAME = "Main Campus Parking";
   private static final String NOT_FOUND_MESSAGE = "Parking lot not found with id: ";
-  private static final String NULL_ENTITY_MESSAGE = "Entity must not be null";
 
   @Mock
   private ParkingLotRepository parkingLotRepository;
@@ -70,7 +69,7 @@ class ParkingLotServiceImplTest {
     when(parkingLotRepository.existsById(LOT_ID)).thenReturn(false);
 
     assertThatThrownBy(() -> parkingLotService.delete(LOT_ID))
-        .isInstanceOf(EntityNotFoundException.class)
+        .isInstanceOf(ResourceNotFoundException.class)
         .hasMessageContaining(NOT_FOUND_MESSAGE + LOT_ID);
 
     verify(parkingLotRepository, never()).deleteById(any());

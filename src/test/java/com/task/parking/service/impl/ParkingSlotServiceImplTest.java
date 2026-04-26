@@ -12,9 +12,9 @@ import com.task.parking.dto.ParkingSlotResponse;
 import com.task.parking.entity.ParkingSlot;
 import com.task.parking.enums.ParkingSlotType;
 import com.task.parking.enums.SlotStatus;
+import com.task.parking.exception.ResourceNotFoundException;
 import com.task.parking.mapper.ParkingSlotMapper;
 import com.task.parking.repository.ParkingSlotRepository;
-import jakarta.persistence.EntityNotFoundException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -135,7 +135,7 @@ class ParkingSlotServiceImplTest {
         .thenReturn(Optional.empty());
 
     assertThatThrownBy(() -> parkingSlotService.getAvailableSlot(allowedTypes))
-        .isInstanceOf(EntityNotFoundException.class)
+        .isInstanceOf(ResourceNotFoundException.class)
         .hasMessageContaining(NOT_FOUND_BY_TYPE_MSG);
   }
 
@@ -160,7 +160,7 @@ class ParkingSlotServiceImplTest {
     when(parkingSlotRepository.findById(SLOT_ID)).thenReturn(Optional.empty());
 
     assertThatThrownBy(() -> parkingSlotService.changeStatus(SLOT_ID, SlotStatus.OCCUPIED))
-        .isInstanceOf(EntityNotFoundException.class)
+        .isInstanceOf(ResourceNotFoundException.class)
         .hasMessageContaining(NOT_FOUND_BY_ID_MSG + SLOT_ID);
   }
 
@@ -178,7 +178,7 @@ class ParkingSlotServiceImplTest {
     when(parkingSlotRepository.existsById(SLOT_ID)).thenReturn(false);
 
     assertThatThrownBy(() -> parkingSlotService.delete(SLOT_ID))
-        .isInstanceOf(EntityNotFoundException.class)
+        .isInstanceOf(ResourceNotFoundException.class)
         .hasMessageContaining(NOT_FOUND_BY_ID_MSG + SLOT_ID);
 
     verify(parkingSlotRepository, never()).deleteById(any());

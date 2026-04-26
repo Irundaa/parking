@@ -12,6 +12,8 @@ import com.task.parking.entity.Ticket;
 import com.task.parking.entity.Vehicle;
 import com.task.parking.enums.SlotStatus;
 import com.task.parking.enums.TicketStatus;
+import com.task.parking.exception.ParkingConflictException;
+import com.task.parking.exception.ResourceNotFoundException;
 import com.task.parking.factory.VehicleFactory;
 import com.task.parking.mapper.TicketMapper;
 import com.task.parking.repository.TicketRepository;
@@ -20,7 +22,6 @@ import com.task.parking.service.ParkingService;
 import com.task.parking.service.ParkingSlotService;
 import com.task.parking.strategy.FeeCalculationStrategy;
 import com.task.parking.strategy.FeeStrategyFactory;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -42,7 +43,7 @@ public class ParkingServiceImpl implements ParkingService {
   @Transactional
   public CheckInResponse checkIn(CheckInRequest request) {
     if (ticketRepository.existsByVehicleLicensePlateAndTicketStatus(request.getLicensePlate(),TicketStatus.ACTIVE)){
-      throw new IllegalArgumentException("Ticket already exists");
+      throw new ParkingConflictException("Ticket already exists");
     }
 
     Vehicle vehicle = vehicleRepository.findByLicensePlate(request.getLicensePlate())
@@ -78,7 +79,7 @@ public class ParkingServiceImpl implements ParkingService {
   @Transactional
   public CheckOutResponse checkOut(String licensePlate) {
     Ticket ticket = ticketRepository.findByVehicleLicensePlateAndTicketStatus(licensePlate,
-        TicketStatus.ACTIVE).orElseThrow(() -> new EntityNotFoundException(
+        TicketStatus.ACTIVE).orElseThrow(() -> new ResourceNotFoundException(
             "Parking session with license plate: " + licensePlate + " does not exist" ));
 
     ParkingSlot parkingSlot = ticket.getParkingSlot();

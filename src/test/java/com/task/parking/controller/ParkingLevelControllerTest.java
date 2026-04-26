@@ -9,8 +9,9 @@ import static org.mockito.Mockito.when;
 
 import com.task.parking.dto.ParkingLevelRequest;
 import com.task.parking.dto.ParkingLevelResponse;
+import com.task.parking.exception.InvalidParkingRequestException;
+import com.task.parking.exception.ResourceNotFoundException;
 import com.task.parking.service.ParkingLevelService;
-import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -49,10 +50,10 @@ class ParkingLevelControllerTest {
   void createLevelShouldThrowExceptionWhenServiceFails() {
     ParkingLevelRequest request = buildRequest(PARKING_LOT_ID);
     when(parkingLevelService.create(request))
-        .thenThrow(new IllegalArgumentException("Invalid parking level data"));
+        .thenThrow(new InvalidParkingRequestException("Invalid parking level data"));
 
     assertThatThrownBy(() -> parkingLevelController.createLevel(request))
-        .isInstanceOf(IllegalArgumentException.class)
+        .isInstanceOf(InvalidParkingRequestException.class)
         .hasMessageContaining("Invalid parking level data");
   }
 
@@ -68,11 +69,11 @@ class ParkingLevelControllerTest {
 
   @Test
   void deleteLevelShouldThrowExceptionWhenLevelNotFound() {
-    doThrow(new EntityNotFoundException("Level not found"))
+    doThrow(new ResourceNotFoundException("Level not found"))
         .when(parkingLevelService).delete(LEVEL_ID);
 
     assertThatThrownBy(() -> parkingLevelController.deleteLevel(LEVEL_ID))
-        .isInstanceOf(EntityNotFoundException.class)
+        .isInstanceOf(ResourceNotFoundException.class)
         .hasMessageContaining("not found");
   }
 

@@ -7,6 +7,7 @@ import static org.mockito.Mockito.when;
 
 import com.task.parking.enums.VehicleType;
 import java.util.List;
+import com.task.parking.exception.InvalidParkingRequestException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -49,14 +50,14 @@ class FeeStrategyFactoryTest {
     FeeStrategyFactory incompleteFactory = new FeeStrategyFactory(List.of(carStrategy));
 
     assertThatThrownBy(() -> incompleteFactory.getStrategy(VehicleType.TRUCK))
-        .isInstanceOf(IllegalArgumentException.class)
+        .isInstanceOf(InvalidParkingRequestException.class)
         .hasMessageContaining(UNKNOWN_TYPE_MSG + VehicleType.TRUCK);
   }
 
   @Test
   void getStrategyShouldThrowExceptionWhenTypeIsNull() {
     assertThatThrownBy(() -> feeStrategyFactory.getStrategy(null))
-        .isInstanceOf(IllegalArgumentException.class)
+        .isInstanceOf(InvalidParkingRequestException.class)
         .hasMessageContaining(UNKNOWN_TYPE_MSG + "null");
   }
 }

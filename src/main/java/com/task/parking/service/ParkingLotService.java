@@ -2,6 +2,7 @@ package com.task.parking.service;
 
 import com.task.parking.dto.ParkingLotRequest;
 import com.task.parking.dto.ParkingLotResponse;
+import com.task.parking.exception.ResourceNotFoundException;
 
 /**
  * Service interface for managing the parking lot entity.
@@ -21,6 +22,7 @@ public interface ParkingLotService {
    * Deletes a parking lot by its unique identifier.
    *
    * @param id the unique identifier of the parking lot to delete
+   * @throws ResourceNotFoundException if the lot ID does not exist
    */
   void delete(Long id);
 }
