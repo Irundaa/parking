@@ -3,10 +3,10 @@ package com.task.parking.service.impl;
 import com.task.parking.dto.ParkingLevelRequest;
 import com.task.parking.dto.ParkingLevelResponse;
 import com.task.parking.entity.ParkingLevel;
+import com.task.parking.exception.ResourceNotFoundException;
 import com.task.parking.mapper.ParkingLevelMapper;
 import com.task.parking.repository.ParkingLevelRepository;
 import com.task.parking.service.ParkingLevelService;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -35,7 +35,7 @@ public class ParkingLevelServiceImpl implements ParkingLevelService {
   public void delete(Long id) {
     log.info("Deleting parking level with id: {}", id);
     if (!parkingLevelRepository.existsById(id)) {
-      throw new EntityNotFoundException("Parking level not found with id: " + id);
+      throw new ResourceNotFoundException("Parking level not found with id: " + id);
     }
     parkingLevelRepository.deleteById(id);
   }

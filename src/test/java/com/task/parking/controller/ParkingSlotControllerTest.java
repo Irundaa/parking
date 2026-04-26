@@ -11,8 +11,9 @@ import com.task.parking.dto.ParkingSlotRequest;
 import com.task.parking.dto.ParkingSlotResponse;
 import com.task.parking.enums.ParkingSlotType;
 import com.task.parking.enums.SlotStatus;
+import com.task.parking.exception.InvalidParkingRequestException;
+import com.task.parking.exception.ResourceNotFoundException;
 import com.task.parking.service.ParkingSlotService;
-import jakarta.persistence.EntityNotFoundException;
 import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.Test;
@@ -57,10 +58,10 @@ class ParkingSlotControllerTest {
   void createSlotShouldThrowExceptionWhenServiceFails() {
     ParkingSlotRequest request = buildRequest(LEVEL_ID);
     when(parkingSlotService.create(request))
-        .thenThrow(new IllegalArgumentException("Invalid parking slot data"));
+        .thenThrow(new InvalidParkingRequestException("Invalid parking slot data"));
 
     assertThatThrownBy(() -> parkingSlotController.createSlot(request))
-        .isInstanceOf(IllegalArgumentException.class)
+        .isInstanceOf(InvalidParkingRequestException.class)
         .hasMessageContaining("Invalid parking slot data");
   }
 
@@ -132,11 +133,11 @@ class ParkingSlotControllerTest {
 
   @Test
   void changeStatusShouldThrowExceptionWhenSlotNotFound() {
-    doThrow(new EntityNotFoundException("Slot not found"))
+    doThrow(new ResourceNotFoundException("Slot not found"))
         .when(parkingSlotService).changeStatus(SLOT_ID, SlotStatus.OCCUPIED);
 
     assertThatThrownBy(() -> parkingSlotController.changeStatus(SLOT_ID, SlotStatus.OCCUPIED))
-        .isInstanceOf(EntityNotFoundException.class)
+        .isInstanceOf(ResourceNotFoundException.class)
         .hasMessageContaining("not found");
   }
 
@@ -161,11 +162,11 @@ class ParkingSlotControllerTest {
 
   @Test
   void deleteSlotShouldThrowExceptionWhenSlotNotFound() {
-    doThrow(new EntityNotFoundException("Slot not found"))
+    doThrow(new ResourceNotFoundException("Slot not found"))
         .when(parkingSlotService).delete(SLOT_ID);
 
     assertThatThrownBy(() -> parkingSlotController.deleteSlot(SLOT_ID))
-        .isInstanceOf(EntityNotFoundException.class)
+        .isInstanceOf(ResourceNotFoundException.class)
         .hasMessageContaining("not found");
   }
 

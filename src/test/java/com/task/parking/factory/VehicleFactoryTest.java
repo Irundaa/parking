@@ -9,6 +9,7 @@ import com.task.parking.entity.Truck;
 import com.task.parking.entity.Vehicle;
 import com.task.parking.enums.VehicleType;
 import java.util.stream.Stream;
+import com.task.parking.exception.InvalidParkingRequestException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -36,14 +37,14 @@ class VehicleFactoryTest {
   @Test
   void createVehicleShouldThrowExceptionWhenTypeIsNull() {
     assertThatThrownBy(() -> vehicleFactory.createVehicle(LICENSE_PLATE, null))
-        .isInstanceOf(IllegalArgumentException.class)
+        .isInstanceOf(InvalidParkingRequestException.class)
         .hasMessageContaining(NULL_TYPE_MSG);
   }
 
   @Test
   void createVehicleShouldThrowExceptionWhenLicensePlateIsNull() {
     assertThatThrownBy(() -> vehicleFactory.createVehicle(null, VehicleType.CAR))
-        .isInstanceOf(IllegalArgumentException.class)
+        .isInstanceOf(InvalidParkingRequestException.class)
         .hasMessageContaining(NULL_PLATE_MSG);
   }
 

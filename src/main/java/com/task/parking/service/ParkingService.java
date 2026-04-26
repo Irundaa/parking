@@ -4,6 +4,8 @@ import java.util.List;
 import com.task.parking.dto.CheckInRequest;
 import com.task.parking.dto.CheckInResponse;
 import com.task.parking.dto.CheckOutResponse;
+import com.task.parking.exception.ParkingConflictException;
+import com.task.parking.exception.ResourceNotFoundException;
 
 /**
  * Core business logic service for managing the parking process.
@@ -18,8 +20,8 @@ public interface ParkingService {
    *
    * @param request the check-in request containing the vehicle's license plate and type
    * @return a response containing the assigned slot, entry time, and license plate
-   * @throws IllegalArgumentException if the vehicle is already parked (active ticket exists)
-   * @throws jakarta.persistence.EntityNotFoundException if no suitable slots are available
+   * @throws ParkingConflictException if the vehicle is already parked (active ticket exists)
+   * @throws ResourceNotFoundException if no suitable slots are available
    */
   CheckInResponse checkIn(CheckInRequest request);
 
@@ -30,7 +32,7 @@ public interface ParkingService {
    *
    * @param licensePlate the license plate of the checking-out vehicle
    * @return a summary of the completed session, including total duration and calculated fee
-   * @throws jakarta.persistence.EntityNotFoundException if no active session is found for the given license plate
+   * @throws ResourceNotFoundException if no active session is found for the given license plate
    */
   CheckOutResponse checkOut(String licensePlate);
 

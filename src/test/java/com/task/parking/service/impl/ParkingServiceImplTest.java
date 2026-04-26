@@ -18,6 +18,8 @@ import com.task.parking.enums.ParkingSlotType;
 import com.task.parking.enums.SlotStatus;
 import com.task.parking.enums.TicketStatus;
 import com.task.parking.enums.VehicleType;
+import com.task.parking.exception.ParkingConflictException;
+import com.task.parking.exception.ResourceNotFoundException;
 import com.task.parking.factory.VehicleFactory;
 import com.task.parking.mapper.TicketMapper;
 import com.task.parking.repository.TicketRepository;
@@ -25,7 +27,6 @@ import com.task.parking.repository.VehicleRepository;
 import com.task.parking.service.ParkingSlotService;
 import com.task.parking.strategy.FeeCalculationStrategy;
 import com.task.parking.strategy.FeeStrategyFactory;
-import jakarta.persistence.EntityNotFoundException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -131,7 +132,7 @@ class ParkingServiceImplTest {
         .thenReturn(true);
 
     assertThatThrownBy(() -> parkingService.checkIn(request))
-        .isInstanceOf(IllegalArgumentException.class)
+        .isInstanceOf(ParkingConflictException.class)
         .hasMessageContaining(TICKET_EXISTS_MSG);
 
     verify(vehicleRepository, never()).findByLicensePlate(any());
@@ -176,7 +177,7 @@ class ParkingServiceImplTest {
         .thenReturn(Optional.empty());
 
     assertThatThrownBy(() -> parkingService.checkOut(LICENSE_PLATE))
-        .isInstanceOf(EntityNotFoundException.class)
+        .isInstanceOf(ResourceNotFoundException.class)
         .hasMessageContaining(SESSION_NOT_FOUND_MSG);
 
     verify(feeStrategyFactory, never()).getStrategy(any());

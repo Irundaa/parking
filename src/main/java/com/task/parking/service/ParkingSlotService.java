@@ -6,6 +6,7 @@ import com.task.parking.dto.ParkingSlotResponse;
 import com.task.parking.entity.ParkingSlot;
 import com.task.parking.enums.ParkingSlotType;
 import com.task.parking.enums.SlotStatus;
+import com.task.parking.exception.ResourceNotFoundException;
 
 /**
  * Service interface for managing individual parking slots.
@@ -41,7 +42,7 @@ public interface ParkingSlotService {
    *
    * @param allowedTypes a list of slot types suitable for a specific vehicle
    * @return the first available parking slot entity
-   * @throws jakarta.persistence.EntityNotFoundException if no matching available slot is found
+   * @throws ResourceNotFoundException if no matching available slot is found
    */
   ParkingSlot getAvailableSlot(List<ParkingSlotType> allowedTypes);
 
@@ -50,7 +51,7 @@ public interface ParkingSlotService {
    *
    * @param id the unique identifier of the parking slot
    * @param status the new status to apply (e.g., MAINTENANCE, AVAILABLE)
-   * @throws jakarta.persistence.EntityNotFoundException if the slot ID does not exist
+   * @throws ResourceNotFoundException if the slot ID does not exist
    */
   void changeStatus(Long id, SlotStatus status);
 
@@ -58,7 +59,7 @@ public interface ParkingSlotService {
    * Deletes a parking slot by its unique identifier.
    *
    * @param id the unique identifier of the parking slot to delete
-   * @throws jakarta.persistence.EntityNotFoundException if the slot ID does not exist
+   * @throws ResourceNotFoundException if the slot ID does not exist
    */
   void delete(Long id);
 }

@@ -6,10 +6,10 @@ import com.task.parking.dto.ParkingSlotResponse;
 import com.task.parking.entity.ParkingSlot;
 import com.task.parking.enums.ParkingSlotType;
 import com.task.parking.enums.SlotStatus;
+import com.task.parking.exception.ResourceNotFoundException;
 import com.task.parking.mapper.ParkingSlotMapper;
 import com.task.parking.repository.ParkingSlotRepository;
 import com.task.parking.service.ParkingSlotService;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -58,7 +58,7 @@ public class ParkingSlotServiceImpl implements ParkingSlotService {
   public ParkingSlot getAvailableSlot(List<ParkingSlotType> allowedTypes){
     log.info("Fetching available parking slot");
     return parkingSlotRepository.findFirstByStatusAndTypeIn(SlotStatus.AVAILABLE, allowedTypes)
-        .orElseThrow(() -> new EntityNotFoundException("Parking slot not found for this type"));
+        .orElseThrow(() -> new ResourceNotFoundException("Parking slot not found for this type"));
   }
 
   @Override
@@ -67,7 +67,7 @@ public class ParkingSlotServiceImpl implements ParkingSlotService {
     log.info("Updating status of parking slot ID: {} to {}", id, status);
 
     ParkingSlot slot = parkingSlotRepository.findById(id)
-        .orElseThrow(() -> new EntityNotFoundException("Parking slot not found with ID: " + id));
+        .orElseThrow(() -> new ResourceNotFoundException("Parking slot not found with ID: " + id));
 
     slot.setStatus(status);
   }
@@ -77,7 +77,7 @@ public class ParkingSlotServiceImpl implements ParkingSlotService {
   public void delete(Long id) {
     log.info("Deleting parking slot with ID: {}", id);
     if (!parkingSlotRepository.existsById(id)) {
-      throw new EntityNotFoundException("Parking slot not found with ID: " + id);
+      throw new ResourceNotFoundException("Parking slot not found with ID: " + id);
     }
     parkingSlotRepository.deleteById(id);
   }
